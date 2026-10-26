@@ -1,0 +1,37 @@
+\section{Proposed Algorithm}\label{sec:alg}
+
+We develop an alternating optimization (AO) algorithm that decouples~\eqref{eq:opt} into three subproblems, solved iteratively until convergence.
+
+\subsection{Satellite Beamforming and AN Design}
+Given $(\boldsymbol{\theta}_t, \boldsymbol{\theta}_r)$, the subproblem over $(\{\mathbf{w}_k\}, \mathbf{Z})$ is handled by introducing slack variables for the difference-of-logarithms objective and applying successive convex approximation (SCA) with first-order Taylor expansions of the concave terms at the current iterate, following the framework of~\cite{zhao2025nearfield}. Each SCA step is a convex QCQP/SDP solvable by standard solvers (e.g., CVX/MOSEK).
+
+\subsection{STAR-RIS Coefficient Design}
+Given $(\{\mathbf{w}_k\}, \mathbf{Z})$, the coefficients $\boldsymbol{\theta}_t, \boldsymbol{\theta}_r$ are optimized by combining the amplitude and phase of each element into a joint variable as in~\cite{zhao2025aerial}, and relaxing the energy-conservation constraint~\eqref{eq:opt_unity} via a penalty term $\rho \sum_m \big(\beta_{t,m}^2 + \beta_{r,m}^2 - 1\big)^2$ appended to the objective; the penalty weight $\rho$ is increased across iterations (penalty-based method), followed by a projection onto the feasible set of~\eqref{eq:opt_unity}.
+
+\subsection{Overall Algorithm}
+\begin{algorithm}[t]
+\caption{Proposed AO Algorithm for Problem~\eqref{eq:opt}}
+\label{alg:ao}
+\begin{algorithmic}[1]
+\Require Initial feasible $(\{\mathbf{w}_k^{(0)}\}, \mathbf{Z}^{(0)}, \boldsymbol{\theta}_t^{(0)}, \boldsymbol{\theta}_r^{(0)})$; penalty $\rho^{(0)}$; tolerance $\epsilon$; EKF estimate $\hat{\boldsymbol{\xi}}_a$ from~\eqref{eq:ekf}.
+\Repeat
+    \State Update $(\{\mathbf{w}_k^{(i)}\}, \mathbf{Z}^{(i)})$ via SCA given $(\boldsymbol{\theta}_t^{(i-1)}, \boldsymbol{\theta}_r^{(i-1)})$;
+    \State Update $(\boldsymbol{\theta}_t^{(i)}, \boldsymbol{\theta}_r^{(i)})$ via penalty-based method given $(\{\mathbf{w}_k^{(i)}\}, \mathbf{Z}^{(i)})$;
+    \State Increase penalty weight $\rho^{(i)}$; $i \leftarrow i+1$;
+\Until{relative increase of~\eqref{eq:opt_obj} $< \epsilon$ and penalty residual $< \epsilon$.}
+\Ensure $(\{\mathbf{w}_k^\star\}, \mathbf{Z}^\star, \boldsymbol{\theta}_t^\star, \boldsymbol{\theta}_r^\star)$.
+\end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[Convergence]
+Algorithm~\ref{alg:ao} generates a non-decreasing sequence of objective values of~\eqref{eq:opt_obj} and converges to a Karush--Kuhn--Tucker (KKT) point of the penalized problem; as $\rho \to \infty$, the solution satisfies~\eqref{eq:opt_unity} and is a KKT point of~\eqref{eq:opt}.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Each SCA subproblem is convex and its solution does not decrease the surrogate objective, which lower-bounds~\eqref{eq:opt_obj}; the penalty subproblem is bounded below and monotonically converges. The boundedness of~\eqref{eq:opt_obj} (due to~\eqref{eq:opt_pow}) completes the argument.
+\end{proof}
+
+\emph{Complexity:} The per-iteration complexity is $\mathcal{O}\big(N^{3.5} + K N^2 + M^{3.5}\big)$, dominated by the interior-point SCA steps; in our Python/CVXPY realization ($M=128$, $N=256$), one AO outer iteration takes about one minute on a standard CPU core, and convergence is reached within a few outer iterations (Fig.~\ref{fig:conv}).
+
+\begin{remark}[Simulated realization]
+In the numerical results of Section~\ref{sec:results}, a low-complexity realization is simulated: the AN covariance is fixed isotropic with a 20\% power fraction, the per-element constraint~\eqref{eq:opt_unity} is handled by its convex hull (disk relaxation) followed by normalization, and the AO is warm-started from the conventional-RIS solution and from a continuation path over $P_{\max}$. Since the STAR-RIS design subsumes the reflecting-only design as a special case, the best converged point over the initializations is retained. Optimizing $\mathbf{Z}$ jointly and a full penalty-based treatment are left to the journal extension.
+\end{remark}

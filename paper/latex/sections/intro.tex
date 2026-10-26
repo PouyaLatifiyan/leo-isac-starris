@@ -1,0 +1,21 @@
+\section{Introduction}\label{sec:intro}
+
+Low-Earth-orbit (LEO) satellite constellations are a key pillar of 6G non-terrestrial networks (NTN), providing global positioning, navigation, and timing (PNT) as well as broadband connectivity. However, the broadcast nature and long propagation distance of satellite-to-ground links make LEO navigation signals highly vulnerable to \emph{spoofing} attacks, in which an adversary injects counterfeit signals to mislead the position estimation of legitimate users.
+
+Physical layer security (PLS) techniques, particularly beamforming-based secrecy enhancement, have been extensively studied for terrestrial and UAV networks~\cite{zeng2016uav,wu2020ris}. In~\cite{zhao2025nearfield}, a near-field ISAC framework was proposed for secure UAV networks, where artificial noise (AN) is used for both jamming and sensing, and the eavesdropper's 3D velocity is estimated from near-field Doppler observations with an extended Kalman filter (EKF); near-field velocity sensing and predictive beamforming were further developed in~\cite{wang2025velocity}. STAR-RIS has been shown to provide full-space $360^\circ$ coverage by simultaneously transmitting and reflecting incident signals~\cite{zhao2022starris,mu2022starris,xu2021starris}, and its active variant can compensate the multiplicative path loss of cascaded channels~\cite{zhao2025aerial,zhang2023activeris}. The dual-functional ISAC paradigm itself is surveyed in~\cite{liu2022isac}, and near-field ISAC beamforming for target detection was studied in~\cite{galappaththige2024nearfield,cao2024nearfield}.
+
+Nevertheless, three gaps remain open:
+\begin{enumerate}[leftmargin=1.5em]
+    \item Existing near-field secure ISAC designs focus on terrestrial/UAV scenarios with short link distances; the LEO-to-ground geometry with strong orbital Doppler has not been addressed.
+    \item Existing STAR-RIS designs target sum-rate maximization and do not consider spoofing threats or sensing-aided security.
+    \item Spoofing-resilient navigation, which requires both \emph{detection/localization of the attacker} and \emph{protective beamforming}, has not been jointly treated with STAR-RIS in near field.
+\end{enumerate}
+
+Motivated by the above, this project develops a near-field secure ISAC framework for spoofing-resilient LEO navigation aided by a STAR-RIS. The contributions are summarized as follows:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{New system model:} To the best of our knowledge, one of the first combinations of near-field propagation, STAR-RIS, and ISAC for an LEO-NTN navigation scenario under an active spoofing attack. In contrast to~\cite{zhao2025nearfield}, which considers a passive eavesdropper in a terrestrial UAV scenario, we address an \emph{active injecting spoofer} in the LEO-NTN geometry and exploit its \emph{sensed} location in the secrecy design. A hybrid far-field/near-field cascaded channel model is developed: the satellite-to-STAR-RIS link follows far-field LoS propagation with orbital Doppler, while the STAR-RIS-to-user and STAR-RIS-to-spoofer links operate in the near-field (Fresnel) region.
+    \item \textbf{New CRB analysis:} A Cram\'er--Rao bound for spoofer 3D localization over the STAR-RIS cascaded near-field channel is derived and used as an explicit sensing-accuracy constraint in the design.
+    \item \textbf{New joint optimization algorithm:} An AO algorithm jointly designs the satellite active beamforming and the STAR-RIS transmission/reflection coefficients to maximize the sum secrecy rate under power, energy-conservation, and CRB constraints, tackled via SCA with a penalty-based treatment of the STAR-RIS energy-conservation constraint, with convergence and complexity analysis.
+\end{itemize}
+
+\emph{Organization:} Section~\ref{sec:model} presents the system model. Section~\ref{sec:problem} formulates the optimization problem and Section~\ref{sec:alg} develops the AO algorithm. Section~\ref{sec:sim} lists the simulation parameters, Section~\ref{sec:results} reports the numerical results, and Section~\ref{sec:concl} concludes the paper.

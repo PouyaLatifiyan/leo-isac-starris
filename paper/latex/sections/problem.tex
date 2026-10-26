@@ -1,0 +1,16 @@
+\section{Problem Formulation}\label{sec:problem}
+
+We maximize the sum secrecy rate of the legitimate users by jointly optimizing the satellite beamformers $\{\mathbf{w}_k\}$, the AN covariance $\mathbf{Z}$, and the STAR-RIS coefficients $\{\boldsymbol{\theta}_t, \boldsymbol{\theta}_r\}$, subject to the sensing accuracy, power, and STAR-RIS energy constraints:
+
+\begin{subequations}\label{eq:opt}
+\begin{align}
+\max_{\{\mathbf{w}_k\}, \mathbf{Z}, \boldsymbol{\theta}_t, \boldsymbol{\theta}_r} \quad & \sum_{k=1}^{K} R_k^{\mathrm{sec}} \label{eq:opt_obj}\\
+\text{s.t.} \quad & \mathrm{CRB}(\hat{r}_a, \hat{\theta}_a; \mathbf{Z}, \boldsymbol{\Theta}_r) \le \epsilon_{\mathrm{CRB}}, \label{eq:opt_crb}\\
+& \sum_{k=1}^{K} \|\mathbf{w}_k\|^2 + \mathrm{Tr}(\mathbf{Z}) \le P_{\max}, \label{eq:opt_pow}\\
+& \beta_{t,m}^2 + \beta_{r,m}^2 = 1, \quad \forall m, \label{eq:opt_unity}\\
+& R_k^{\mathrm{sec}} \ge R_k^{\min}, \quad \forall k, \label{eq:opt_qos}
+\end{align}
+\end{subequations}
+where~\eqref{eq:opt_crb} guarantees the spoofer localization accuracy, \eqref{eq:opt_pow} is the satellite power budget, \eqref{eq:opt_unity} enforces STAR-RIS energy conservation, and~\eqref{eq:opt_qos} imposes a minimum secrecy rate per user.
+
+Problem~\eqref{eq:opt} is non-convex due to (i) the coupled fractional secrecy-rate objective, (ii) the rank/unity-modulus-type constraints in~\eqref{eq:opt_unity}, and (iii) the bilinear coupling between $\boldsymbol{\Theta}_\chi$ and $\mathbf{w}_k$ in the cascaded channels~\eqref{eq:cascade}.

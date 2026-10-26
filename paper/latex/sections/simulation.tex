@@ -1,0 +1,31 @@
+\section{Simulation Parameters and Benchmarks}\label{sec:sim}
+
+\begin{table}[t]
+\centering
+\caption{Default Simulation Parameters}
+\label{tab:params}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Parameter & Value \\
+\midrule
+Orbit altitude & 600 km \\
+Carrier frequency & 2 GHz (S band) \\
+Satellite antennas $N$ & $16 \times 16$ UPA \\
+STAR-RIS elements $M$ & 256 (128 in runtime demo) \\
+Rician factor $\kappa$ (sat link) & 10 dB \\
+Satellite antenna gain $G_s$ & 45 dBi \\
+Users ($K_t, K_r$) & (2, 2) \\
+Satellite power $P_{\max}$ & 50 dBm \\
+Spoofer power $P_a$ & $-10$ dBm (GNSS-class spoofing) \\
+Noise power $\sigma^2$ & $-110$ dBm \\
+CRB threshold $\epsilon_{\mathrm{CRB}}$ & $1\,\mathrm{m}^2$ \\
+Element spacing $d$ & $\lambda/2$ \\
+AN power fraction & 20\% (isotropic) \\
+Spoofer--user separation & 50 m \\
+Direct-link shadowing (no-RIS benchmark) & 30 dB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:params} lists the default parameters. With $M=256$ and $d=\lambda/2$, the STAR-RIS aperture is $D \approx 19$\,m and the corresponding Rayleigh distance $2D^2/\lambda \approx 4.9$\,km, so ground users within tens of meters lie deep inside the near-field region, justifying the spherical-wave model of~\eqref{eq:nfsteer}.
+
